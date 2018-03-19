@@ -1,8 +1,24 @@
-# Module4: ネットワーク接続チェック機能の開発
+# Module4: 動作の確認
 
-## 1. ネットワーク接続チェックロジック追加
+## 1. 実機の接続
+
+### Android
+
+TBD
+
+### iOS
+
+TBD
+
+## 2. アプリへのアクセス許可
+
+### Android
+
+TBD
+
+### iOS
 
 TBD
 
 ---
-[Back](module3.md) | [TOP](README.md)
+[Back](module3.md) | [Next](module5.md)
