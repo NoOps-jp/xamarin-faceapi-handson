@@ -155,9 +155,37 @@ Androidマニフェストでつぎの3つのアクセスをチェックしてく
 * READ_EXTERNAL_STORAGE
 * WRITE_EXTERNAL_STORAGE
 
+また、直接**Property**フォルダ内の`AndroidManifest.xml`を編集します。
+
+<application></application>内につぎのタグを記述してください。
+
+```
+<provider android:name="android.support.v4.content.FileProvider"
+          android:authorities="${applicationId}.fileprovider"
+          android:exported="false"
+          android:grantUriPermissions="true">
+	  <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
+                     android:resource="@xml/file_paths"></meta-data>
+</provider>
+```
+
+更に、**Resources**フォルダに**xml**フォルダを作成し、`file_paths.xml`という名前でファイルを作成してください。
+
+`file_paths.xml`の中身はつぎのように記述してください。
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+  <external-files-path name="my_images" path="Pictures" />
+  <external-files-path name="my_movies" path="Movies" />
+</paths>
+```
+
+
+
 ### iOS
 
-iOSプロジェクトの`info.plist`をエディタで開き、`<dict></dict>`ないにつぎの`key`と`string`を記述してください。
+iOSプロジェクトの`info.plist`をエディタで開き、`<dict></dict>`内につぎの`key`と`string`を記述してください。
 
 ```
 <key>NSCameraUsageDescription</key>
