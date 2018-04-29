@@ -9,7 +9,7 @@
 
 つぎに、**Visual C#** -> **Cross-Platform** -> Mobile App(Xamarin.Forms)を選択してください。
 
-プロジェクトテンプレートは**Blank App**を、Code Sharing Strategyは**.NET Standard**ttoを選択してください。
+プロジェクトテンプレートは**Blank App**を、Code Sharing Strategyは**.NET Standard**を選択してください。
 
 ### ビルドの確認
 
@@ -21,21 +21,36 @@
 
 ![](./images/0/welcome.png)
 
-（詳細な手順はTBD）
-
 ## 2. Face APIのAPIキー取得
 
 Face APIを利用するためにAPIキーを取得します。
 
-### Cognitive Services専用ページから取得する場合
-
-https://azure.microsoft.com/ja-jp/try/cognitive-services/?api=face-api
-
 ### Azure Portalから取得する場合
 
+つぎのURLからAzureのポータルにログインしてください。
 https://azure.microsoft.com/ja-jp/features/azure-portal/
 
-（詳細な手順はTBD）
+すべてのサービスから***Cognitive Services**を選択し、**Face API**の**作成**をクリックしてください。
+
+![](./images/0/face_api.png)
+
+つぎのように入力し、**作成**をクリックしてください。
+
+![](./images/0/create_face_api.png)
+
+デプロイしたリソースに移動し、**keys**をクリックするとAPIキーが確認できます。
+
+### Cognitive Services専用ページから取得する場合
+
+つぎのURLにアクセスし、**Face API**の**APIキーを取得**をくりっくしてください。
+https://azure.microsoft.com/ja-jp/try/cognitive-services/?api=face-api
+
+使用条件に同意し、任意のアカウント（Microsoft、Facebook、LinkedIn、GitHub）を選択ししてください。
+
+APIキーとエンドポイントが確認できます。
+
+こちらのサイト経由の場合、有効期間は7日間です。
+
 
 ---
 [Back](README.md) | [Next](module1.md)
