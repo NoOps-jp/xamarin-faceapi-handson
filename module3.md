@@ -27,49 +27,56 @@ namespace HowOld.Xamarin
 
 `MainPage.xaml.cs`を開いてください。
 
-つぎのコードを記述します。
+まず`using`を追加してください。
 
 ```
- public partial class MainPage : ContentPage
+using Microsoft.ProjectOxford.Face;
+using Plugin.Media.Abstractions;
+using Plugin.Media;
+```
+
+更につぎのコードを記述します。
+
+```
+public partial class MainPage : ContentPage
+{
+    private readonly IFaceServiceClient _faceServiceClient;
+
+    public MainPage()
     {
-        private readonly IFaceServiceClient _faceServiceClient;
+        InitializeComponent();
+        // 書き換えが必要です
+        _faceServiceClient = new FaceServiceClient([取得したAPIキーを記述], [Endpoint URL]);
+    }
 
-        public MainPage()
+    private async Task<FaceDetection> DetectFaceAsync(MediaFile inputFile)
+    {
+        try
         {
-            InitializeComponent();
-            // 書き換えが必要です
-            _faceServiceClient = new FaceServiceClient([取得したAPIキーを記述], [Endpoint URL]);
-        }
+            var faces = await _faceServiceClient.DetectAsync(inputFile.GetStream(), false, false, (FaceAttributeType[])Enum.GetValues(typeof(FaceAttributeType)));
 
-        private async Task<FaceDetection> DetectFaceAsync(MediaFile inputFile)
+            if (faces.Length == 0) {
+                throw new Exception("顔を認識できませんでした。別の写真を試してください。");
+            }
+
+            var faceAttributes = faces[0]?.FaceAttributes;
+            var faceDetection = new FaceDetection();
+            faceDetection.Age = faceAttributes.Age;
+            faceDetection.Emotion = faceAttributes.Emotion.ToRankedList().FirstOrDefault().Key;
+            faceDetection.Glasses = faceAttributes.Glasses.ToString();
+            faceDetection.Smile = faceAttributes.Smile;
+            faceDetection.Gender = faceAttributes.Gender;
+            faceDetection.Moustache = faceAttributes.FacialHair.Moustache;
+            faceDetection.Beard = faceAttributes.FacialHair.Beard;
+
+            return faceDetection;
+        }
+        catch(Exception ex)
         {
-            try
-            {
-                var faces = await _faceServiceClient.DetectAsync(inputFile.GetStream(), false, false, (FaceAttributeType[])Enum.GetValues(typeof(FaceAttributeType)));
-
-                if (faces.Length == 0) {
-                    throw new Exception("顔を認識できませんでした。別の写真を試してください。");
-                }
-
-                var faceAttributes = faces[0]?.FaceAttributes;
-                var faceDetection = new FaceDetection();
-                faceDetection.Age = faceAttributes.Age;
-                faceDetection.Emotion = faceAttributes.Emotion.ToRankedList().FirstOrDefault().Key;
-                faceDetection.Glasses = faceAttributes.Glasses.ToString();
-                faceDetection.Smile = faceAttributes.Smile;
-                faceDetection.Gender = faceAttributes.Gender;
-                faceDetection.Moustache = faceAttributes.FacialHair.Moustache;
-                faceDetection.Beard = faceAttributes.FacialHair.Beard;
-
-                return faceDetection;
-            }
-            catch(Exception ex)
-            {
-                await DisplayAlert("Error", ex.Message, "OK");
-                return null;
-            }
+            await DisplayAlert("Error", ex.Message, "OK");
+            return null;
         }
-    ｝
+    }
 }
 ```
 
@@ -140,11 +147,26 @@ private async void TakePictureButton_Clicked(object sender, EventArgs e)
 
 ### Android
 
-（詳細な手順はTBD）
+Androidプロジェクトを右クリックし、**プロパティ**をクリックしてください。
+
+Androidマニフェストでつぎの3つのアクセスをチェックしてください。
+
+* CAMERA
+* READ_EXTERNAL_STORAGE
+* WRITE_EXTERNAL_STORAGE
 
 ### iOS
 
-（詳細な手順はTBD）
+iOSプロジェクトの`info.plist`をエディタで開き、`<dict></dict>`ないにつぎの`key`と`string`を記述してください。
+
+```
+<key>NSCameraUsageDescription</key>
+<string>This app needs access to the camera to take photos.</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>This app needs access to photos.</string>
+<key>NSPhotoLibraryAddUsageDescription</key>
+<string>This app needs access to the photo gallery.</string>
+```
 
 ---
 [Back](module2.md) | [Next](module4.md)
