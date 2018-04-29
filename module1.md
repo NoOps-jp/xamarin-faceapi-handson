@@ -9,7 +9,7 @@ NuGetでFace APIのSDKを追加します。ソリューションを右クリッ�
 
 **参照**タブを選択し、検索フィールドに`Microsoft.ProjectOxford.Face`を入力してください。
 
-**Microsoft.ProjectOxford.Face.DotNetStandard**を選択し、**プロジェクト**をチェックし、***インストール**をクリックしてください。
+**Microsoft.ProjectOxford.Face.DotNetStandard**を選択し、**プロジェクト**をチェックし、**インストール**をクリックしてください。
 
 ![](./images/1/nuget.png)
 
