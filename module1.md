@@ -15,7 +15,7 @@ NuGetでFace APIのSDKを追加します。ソリューションを右クリッ�
 
 ※Visual Studioのバージョンの関係等でCode Sharing Strategyを**Portal Class Library**を選択している方は**Microsoft.ProjectOxford.Face**をインストールしてください。
 
-## 2. ネットワーク可能性チェック用ライブラリの追加
+## 2. ネットワーク可用性チェック用ライブラリの追加
 
 1と同様にNuGetでライブラリを追加します。**Xam.Plugin.Connectivity**をインストールしてください。
 

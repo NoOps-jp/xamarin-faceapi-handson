@@ -9,6 +9,7 @@ Face APIからのレスポンスをデシリアライズするクラス（`FaceD
 
 `FaceDetection.cs`につぎのコードを記述します。`namespace`はご自身のプロジェクト名のまま変更しないでください。
 
+```
 namespace HowOld.Xamarin
 {
     public class FaceDetection
@@ -22,6 +23,7 @@ namespace HowOld.Xamarin
         public double Moustache { get; set; }
     }
 }
+```
 
 ## 2. APIを使用するロジックの追加
 
@@ -157,7 +159,7 @@ Androidマニフェストでつぎの3つのアクセスをチェックしてく
 
 また、直接**Property**フォルダ内の`AndroidManifest.xml`を編集します。
 
-<application></application>内につぎのタグを記述してください。
+<application>タグ内につぎのタグを記述してください。
 
 ```
 <provider android:name="android.support.v4.content.FileProvider"
@@ -169,7 +171,7 @@ Androidマニフェストでつぎの3つのアクセスをチェックしてく
 </provider>
 ```
 
-更に、**Resources**フォルダに**xml**フォルダを作成し、`file_paths.xml`という名前でファイルを作成してください。
+更に、**Resources**フォルダの中に**xml**フォルダを作成し、`file_paths.xml`という名前でファイルを作成してください。
 
 `file_paths.xml`の中身はつぎのように記述してください。
 
@@ -185,7 +187,7 @@ Androidマニフェストでつぎの3つのアクセスをチェックしてく
 
 ### iOS
 
-iOSプロジェクトの`info.plist`をエディタで開き、`<dict></dict>`内につぎの`key`と`string`を記述してください。
+iOSプロジェクトの`info.plist`をエディタで開き、`<dict>`タグ内につぎの`key`と`string`を記述してください。
 
 ```
 <key>NSCameraUsageDescription</key>
