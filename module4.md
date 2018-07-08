@@ -49,5 +49,7 @@ Visual StudioでiOSプロジェクトのinfo.plistを開き、先ほどXcodeで�
 
 アプリ初回実行時にカメラやメディアライブラリへの許可が求められたらOKを選択してください。
 
+![](./images/4/permission.png)
+
 ---
 [Back](module3.md) | [Next](module5.md)

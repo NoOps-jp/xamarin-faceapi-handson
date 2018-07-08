@@ -183,7 +183,22 @@ Androidマニフェストでつぎの3つのアクセスをチェックしてく
 </paths>
 ```
 
+`MainActivity.cs`を開き、つぎのコードを追加してください。
 
+```
+public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+{
+    base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+    PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+}
+```
+
+`AssemblyInfo.cs`を開き、つぎのコードを追加してください。
+
+```
+[assembly: UsesFeature("android.hardware.camera", Required = false)]
+[assembly: UsesFeature("android.hardware.camera.autofocus", Required = false)]
+```
 
 ### iOS
 
