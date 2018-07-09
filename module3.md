@@ -9,6 +9,7 @@ Face APIからのレスポンスをデシリアライズするクラス（`FaceD
 
 `FaceDetection.cs`につぎのコードを記述します。`namespace`はご自身のプロジェクト名のまま変更しないでください。
 
+```
 namespace HowOld.Xamarin
 {
     public class FaceDetection
@@ -22,54 +23,62 @@ namespace HowOld.Xamarin
         public double Moustache { get; set; }
     }
 }
+```
 
 ## 2. APIを使用するロジックの追加
 
 `MainPage.xaml.cs`を開いてください。
 
-つぎのコードを記述します。
+まず`using`を追加してください。
 
 ```
- public partial class MainPage : ContentPage
+using Microsoft.ProjectOxford.Face;
+using Plugin.Media.Abstractions;
+using Plugin.Media;
+```
+
+更につぎのコードを記述します。
+
+```
+public partial class MainPage : ContentPage
+{
+    private readonly IFaceServiceClient _faceServiceClient;
+
+    public MainPage()
     {
-        private readonly IFaceServiceClient _faceServiceClient;
+        InitializeComponent();
+        // 書き換えが必要です
+        _faceServiceClient = new FaceServiceClient([取得したAPIキーを記述], [Endpoint URL]);
+    }
 
-        public MainPage()
+    private async Task<FaceDetection> DetectFaceAsync(MediaFile inputFile)
+    {
+        try
         {
-            InitializeComponent();
-            // 書き換えが必要です
-            _faceServiceClient = new FaceServiceClient([取得したAPIキーを記述], [Endpoint URL]);
-        }
+            var faces = await _faceServiceClient.DetectAsync(inputFile.GetStream(), false, false, (FaceAttributeType[])Enum.GetValues(typeof(FaceAttributeType)));
 
-        private async Task<FaceDetection> DetectFaceAsync(MediaFile inputFile)
+            if (faces.Length == 0) {
+                throw new Exception("顔を認識できませんでした。別の写真を試してください。");
+            }
+
+            var faceAttributes = faces[0]?.FaceAttributes;
+            var faceDetection = new FaceDetection();
+            faceDetection.Age = faceAttributes.Age;
+            faceDetection.Emotion = faceAttributes.Emotion.ToRankedList().FirstOrDefault().Key;
+            faceDetection.Glasses = faceAttributes.Glasses.ToString();
+            faceDetection.Smile = faceAttributes.Smile;
+            faceDetection.Gender = faceAttributes.Gender;
+            faceDetection.Moustache = faceAttributes.FacialHair.Moustache;
+            faceDetection.Beard = faceAttributes.FacialHair.Beard;
+
+            return faceDetection;
+        }
+        catch(Exception ex)
         {
-            try
-            {
-                var faces = await _faceServiceClient.DetectAsync(inputFile.GetStream(), false, false, (FaceAttributeType[])Enum.GetValues(typeof(FaceAttributeType)));
-
-                if (faces.Length == 0) {
-                    throw new Exception("顔を認識できませんでした。別の写真を試してください。");
-                }
-
-                var faceAttributes = faces[0]?.FaceAttributes;
-                var faceDetection = new FaceDetection();
-                faceDetection.Age = faceAttributes.Age;
-                faceDetection.Emotion = faceAttributes.Emotion.ToRankedList().FirstOrDefault().Key;
-                faceDetection.Glasses = faceAttributes.Glasses.ToString();
-                faceDetection.Smile = faceAttributes.Smile;
-                faceDetection.Gender = faceAttributes.Gender;
-                faceDetection.Moustache = faceAttributes.FacialHair.Moustache;
-                faceDetection.Beard = faceAttributes.FacialHair.Beard;
-
-                return faceDetection;
-            }
-            catch(Exception ex)
-            {
-                await DisplayAlert("Error", ex.Message, "OK");
-                return null;
-            }
+            await DisplayAlert("Error", ex.Message, "OK");
+            return null;
         }
-    ｝
+    }
 }
 ```
 
@@ -140,11 +149,69 @@ private async void TakePictureButton_Clicked(object sender, EventArgs e)
 
 ### Android
 
-（詳細な手順はTBD）
+Androidプロジェクトを右クリックし、**プロパティ**をクリックしてください。
+
+Androidマニフェストでつぎの3つのアクセスをチェックしてください。
+
+* CAMERA
+* READ_EXTERNAL_STORAGE
+* WRITE_EXTERNAL_STORAGE
+
+また、直接**Property**フォルダ内の`AndroidManifest.xml`を編集します。
+
+<application>タグ内につぎのタグを記述してください。
+
+```
+<provider android:name="android.support.v4.content.FileProvider"
+          android:authorities="${applicationId}.fileprovider"
+          android:exported="false"
+          android:grantUriPermissions="true">
+	  <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
+                     android:resource="@xml/file_paths"></meta-data>
+</provider>
+```
+
+更に、**Resources**フォルダの中に**xml**フォルダを作成し、`file_paths.xml`という名前でファイルを作成してください。
+
+`file_paths.xml`の中身はつぎのように記述してください。
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+  <external-files-path name="my_images" path="Pictures" />
+  <external-files-path name="my_movies" path="Movies" />
+</paths>
+```
+
+`MainActivity.cs`を開き、つぎのコードを追加してください。
+
+```
+public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+{
+    base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+    PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+}
+```
+
+`AssemblyInfo.cs`を開き、つぎのコードを追加してください。
+
+```
+[assembly: UsesFeature("android.hardware.camera", Required = false)]
+[assembly: UsesFeature("android.hardware.camera.autofocus", Required = false)]
+```
 
 ### iOS
 
-（詳細な手順はTBD）
+iOSプロジェクトの`info.plist`をエディタで開き、`<dict>`タグ内につぎの`key`と`string`を記述してください。
+
+```
+<key>NSCameraUsageDescription</key>
+<string>This app needs access to the camera to take photos.</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>This app needs access to photos.</string>
+<key>NSPhotoLibraryAddUsageDescription</key>
+<string>This app needs access to the photo gallery.</string>
+```
 
 ---
 [Back](module2.md) | [Next](module4.md)

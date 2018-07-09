@@ -4,7 +4,14 @@
 
 本アプリはネットワークに接続していることが前提となるアプリのため、ネットワークの接続チェックロジックを追加します。
 
-`DetectFaceAsync`メソッドにつぎのコードを追加してください。
+`MainPage.xaml.cs`を開き、`using`を追加してください。
+
+```
+using Plugin.Connectivity;
+```
+
+
+更に、`DetectFaceAsync`メソッドにつぎのコードを追加してください。
 
 ```
  if (!CrossConnectivity.Current.IsConnected)
