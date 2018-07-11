@@ -183,7 +183,16 @@ Androidマニフェストでつぎの3つのアクセスをチェックしてく
 </paths>
 ```
 
-`MainActivity.cs`を開き、つぎのコードを追加してください。
+`MainActivity.cs`を開いてください。
+
+まず`using`を追加してください。
+
+```
+using Plugin.Media;
+using Plugin.Connectivity;
+```
+
+つぎのコードを追加してください。
 
 ```
 public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
@@ -191,6 +200,12 @@ public override void OnRequestPermissionsResult(int requestCode, string[] permis
     base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
     PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 }
+```
+
+`OnCreate`メソッドの`base.OnCreate(bundle);`の直後につぎのコードを追加してください。
+
+```
+CrossCurrentActivity.Current.Init(this, bundle);
 ```
 
 `AssemblyInfo.cs`を開き、つぎのコードを追加してください。
