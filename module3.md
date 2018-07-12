@@ -95,14 +95,20 @@ public partial class MainPage : ContentPage
 同`MainPage.xaml.cs`ファイルにつぎのコードを記述してください。
 
 ```
-private async void UploadPictureButton_Clicked(object sender, EventArgs e)
+private async void TakePictureButton_Clicked(object sender, EventArgs e)
 {
-    if (!CrossMedia.Current.IsPickPhotoSupported)
+    await CrossMedia.Current.Initialize();
+    if (!CrossMedia.Current.IsCameraAvailable || !CrossMedia.Current.
+      IsTakePhotoSupported)
     {
-        await DisplayAlert("アップロードできません", "この端末は写真の選択をサポートしていません", "OK");
+        await DisplayAlert("カメラが使用できません", "この端末はカメラの使用をサポートしていません", "OK");
         return;
     }
-    var file = await CrossMedia.Current.PickPhotoAsync();
+    var file = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions
+    {
+        SaveToAlbum = true,
+        Name = "test.jpg"
+    });
     if (file == null)
         return;
     Indicator1.IsRunning = true;
@@ -118,20 +124,14 @@ private async void UploadPictureButton_Clicked(object sender, EventArgs e)
 同`MainPage.xaml.cs`ファイルにつぎのコードを記述してください。
 
 ```
-private async void TakePictureButton_Clicked(object sender, EventArgs e)
+private async void UploadPictureButton_Clicked(object sender, EventArgs e)
 {
-    await CrossMedia.Current.Initialize();
-    if (!CrossMedia.Current.IsCameraAvailable || !CrossMedia.Current.
-      IsTakePhotoSupported)
+    if (!CrossMedia.Current.IsPickPhotoSupported)
     {
-        await DisplayAlert("カメラが使用できません", "この端末はカメラの使用をサポートしていません", "OK");
+        await DisplayAlert("アップロードできません", "この端末は写真の選択をサポートしていません", "OK");
         return;
     }
-    var file = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions
-    {
-        SaveToAlbum = true,
-        Name = "test.jpg"
-    });
+    var file = await CrossMedia.Current.PickPhotoAsync();
     if (file == null)
         return;
     Indicator1.IsRunning = true;
@@ -188,8 +188,8 @@ Androidマニフェストでつぎの3つのアクセスをチェックしてく
 まず`using`を追加してください。
 
 ```
-using Plugin.Media;
-using Plugin.Connectivity;
+using Plugin.CurrentActivity;
+using Plugin.Permissions;
 ```
 
 つぎのコードを追加してください。
